@@ -24,10 +24,12 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-
     ImageView randomImageView;
+    TextView textView;
     SharedPreferences sharedPreferences;
     private static final String pref_name="prefs";
+    private static final String cache_name="cache";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
         randomImageView=findViewById(R.id.randomImageView);
         Button loadButton=findViewById(R.id.loadImageButton);
-        TextView textView=findViewById(R.id.textView);
+        textView=findViewById(R.id.textView);
         sharedPreferences=getSharedPreferences(pref_name,MODE_PRIVATE);
-
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -51,12 +52,11 @@ public class MainActivity extends AppCompatActivity {
                     loadRandomImage();
                 }else{
                     textView.setVisibility(View.VISIBLE);
-                    textView.setText("No network.Please check your connection");
+                    textView.setText(R.string.no_network);
                 }
             }
         });
     }
-
 
     private void loadRandomImage(){
         try {
@@ -65,19 +65,26 @@ public class MainActivity extends AppCompatActivity {
             httpURLConnection.connect();
             InputStream inputStream=httpURLConnection.getInputStream();
             Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+            cacheImages(bitmap);
             randomImageView.setImageBitmap(bitmap);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-
     private void cacheImages(Bitmap bitmap){
         ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,1,byteArrayOutputStream);
         byte[] bytes=byteArrayOutputStream.toByteArray();
-//        SharedPreferences.Editor editor=sharedPreferences.edit();
-//        editor.putString();
+        String encoded=Base64.encodeToString(bytes,Base64.DEFAULT);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString(cache_name,encoded);
+        editor.apply();
+        String cache=sharedPreferences.getString(cache_name, "");
+        if(!cache.isEmpty()){
+            textView.setVisibility(View.VISIBLE);
+            textView.setText(R.string.image_saved_as_cache);
+        }
+
     }
 
     private boolean networkAvailability() {

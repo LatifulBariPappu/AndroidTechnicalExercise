@@ -3,4 +3,6 @@
     <string name="image_will_appear_here">image will appear here</string>
     <string name="load_image">Load Image</string>
     <string name="network_info">network info</string>
+    <string name="no_network">No network.Please check your connection</string>
+    <string name="image_saved_as_cache">image saved as cache</string>
 </resources>
