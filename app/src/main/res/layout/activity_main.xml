@@ -22,13 +22,4 @@
         android:text="@string/load_image"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"/>
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:text="@string/network_info"
-        android:textColor="#C12E00"
-        android:visibility="gone"/>
 </LinearLayout>
